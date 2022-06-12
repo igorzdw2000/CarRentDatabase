@@ -9,7 +9,7 @@ INNER JOIN dict.tbl_plec pl ON pl.IdPlci = k.IdPlci
 WITH CHECK OPTION;
 
 CREATE VIEW vw_klienci_z_polski AS
-SELECT * FROM dbo.tbl_klient klient INNER JOIN dict.tbl_kraj kraj ON kraj.IdKraju = klient.IdKraju WHERE kraj.Kraj = 'polska';
+SELECT IdKlienta, Imie, Nazwisko, Adres, Miejscowosc, kraj.Kraj FROM dbo.tbl_klient klient INNER JOIN dict.tbl_kraj kraj ON kraj.IdKraju = klient.IdKraju WHERE kraj.Kraj = 'polska';
 
 CREATE VIEW vw_marki AS
 SELECT * FROM dict.tbl_marka;
