@@ -137,3 +137,27 @@ VALUES
 (NEXT VALUE FOR dbo.seq_new_id,(SELECT DataRozpoczeciaUbezpieczenia FROM tbl_ubezpieczenie WHERE IdSamochodu=27),(SELECT DataZakonczeniaUbezpieczenia FROM tbl_ubezpieczenie WHERE IdSamochodu=27),'','S.K.P w Pleszewie',100,27),
 (NEXT VALUE FOR dbo.seq_new_id,(SELECT DataRozpoczeciaUbezpieczenia FROM tbl_ubezpieczenie WHERE IdSamochodu=28),(SELECT DataZakonczeniaUbezpieczenia FROM tbl_ubezpieczenie WHERE IdSamochodu=28),'','S.K.P w Pleszewie',100,28)
 
+ALTER SEQUENCE dbo.seq_new_id RESTART;
+
+INSERT INTO tbl_platnosc 
+VALUES 
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(1), 1, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(2), 2, 2),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(3), 3, 2),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(4), 4, 2),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(5), 5, 1),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(6), 6, 3),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(7), 7, 1),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(8), 8, 1),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(9), 9, 2),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(10), 10, 2),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(11), 11, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(12), 12, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(13), 13, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(14), 14, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(15), 15, 3),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(16), 16, 3),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(17), 17, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(18), 18, 4),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(19), 19, 1),
+(NEXT VALUE FOR dbo.seq_new_id, dbo.uf_getLacznaKwota(20), 20, 1)
