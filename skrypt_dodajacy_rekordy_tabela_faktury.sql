@@ -1,0 +1,22 @@
+INSERT INTO tbl_faktura
+VALUES
+(1,'Faktura nr 1/1563/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(1),'3784313982','ABC','92109014218305896215261828',1,1,1),
+(2,'Faktura nr 2/8606/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(2),'5677862347','Deflex','17102027337012704822330779',2,2,1),
+(3, 'Faktura nr 3/2524/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(3),'9328981251','Huragan','74817000080955777312497210',3,3,1),
+(4, 'Faktura nr 4/7513/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(4),'1545850629','Wis³a','72109013756778831668846245',4,4,2),
+(5, 'Faktura nr 5/7937/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(5),'5263242714','Kana³ Sportowy','47124049666273325535803775',5,5,2),
+(6, 'Faktura nr 6/5011/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(6),'5125600738','Meczyki','28823300044238668504428842',6,6,1),
+(7, 'Faktura nr 7/6958/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(7),'9714518179','Trawnik','50948411633777375061893014',7,7,2),
+(8, 'Faktura nr 8/9851/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(8),'3560531473','MB Promotion','23897800084249739659965058',8,8,1),
+(9, 'Faktura nr 9/4142/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(9),'8235879849','FAME MMA','48904210263824782910738141',9,9,2),
+(10, 'Faktura nr 10/8591/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(10),'1589301305','High League','69150023544039376819501367',10,10,1),
+(11, 'Faktura nr 11/1269/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(11),'5114949437','Polsport','52124029918099003251137009',11,11,2),
+(12, 'Faktura nr 12/8725/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(12),'1250867752','PiS','38137013695080241286266264',12,12,1),
+(13, 'Faktura nr 13/7623/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(13),'9519609605','Gazeta Wyborcza','75909400061355586558171290',13,13,2),
+(14, 'Faktura nr 14/6343/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(14),'8373590205','Przegl¹d Sportowy','65132017979161375809408650',14,14,1),
+(15, 'Faktura nr 15/3013/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(15),'3947766949','Newonce','94846700017598833699765286',15,15,2),
+(16, 'Faktura nr 16/9653/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(16),'5297514232','WP','61958310224355038905751863',16,16,1),
+(17, 'Faktura nr 17/8956/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(17),'5125893290','Prawda Futbolu','11109014631576011139194714',17,17,2),
+(18, 'Faktura nr 18/5576/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(18),'8224223223','Onet','50804610122548129962271793',18,18,2),
+(19, 'Faktura nr 19/7355/2021','Wypozyczalnia S.A',dbo.getDataZwrotu(19),'9715898250','sport.pl','39114021213378591155973913',19,19,2),
+(20, 'Faktura nr 20/1819/2022','Wypozyczalnia S.A',dbo.getDataZwrotu(20),'5194427208','Poboty','04124018776491453670892586',20,20,1)
