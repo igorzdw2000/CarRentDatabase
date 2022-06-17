@@ -88,6 +88,7 @@ BEGIN TRY
 	@vin IS NULL 
 	BEGIN
 	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœci NULL'
+	RAISERROR(21,@msg,1)
 	END
 	BEGIN
 	DECLARE @id_model int, @id_marka int, @id_rodzaj_nadwozia int, @id_rodzaj_samochodu int, @id_silnika int
@@ -103,3 +104,32 @@ END TRY
 BEGIN CATCH
 	EXECUTE usp_GetErrorInfo 
 END CATCH
+
+GO
+
+--CREATE OR ALTER PROCEDURE up_usun_auto
+--@id_samochodu int
+--AS
+--BEGIN TRY
+--	DECLARE @msg varchar(50)
+--	IF @id_samochodu IS NULL
+--	BEGIN
+--	SET @msg = 'Podaj wartoœæ id samochodu'
+--	RAISERROR(21,@msg,1)
+--	END
+--	BEGIN
+--	DECLARE @id_rezerwacji int
+--	SET @id_rezerwacji = (SELECT IdRezerwacji FROM tbl_rezerwacja WHERE IdSamochodu=@id_samochodu)
+--	DELETE FROM tbl_ubezpieczenie WHERE IdSamochodu = @id_samochodu
+--	DELETE FROM tbl_przeglad_samochodu WHERE IdSamochodu = @id_samochodu
+--	DELETE FROM tbl_rezerwacja WHERE IdSamochodu = @id_samochodu;
+--	DELETE FROM tbl_rezerwacja_klient WHERE IdRezerwacji = @id_rezerwacji
+--	DELETE FROM tbl_faktura WHERE IdRezerwacji = @id_rezerwacji
+--	DELETE FROM tbl_spis_napraw WHERE IdSamochodu = @id_samochodu
+--	DELETE FROM tbl_samochod WHERE IdSamochodu=@id_samochodu
+--	END
+--END TRY
+--BEGIN CATCH
+--	EXECUTE usp_GetErrorInfo
+--END CATCH
+	

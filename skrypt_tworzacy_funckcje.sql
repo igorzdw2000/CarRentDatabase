@@ -63,3 +63,14 @@ DECLARE @laczna_kwota money
 RETURN @laczna_kwota
 END
 GO
+
+CREATE OR ALTER FUNCTION uf_czy_wolny_samochod(@id_samochodu int)
+RETURNS bit
+BEGIN
+	DECLARE @czy_wolny bit
+	IF (SELECT DataZwrotu FROM tbl_wypozyczenie w INNER JOIN tbl_rezerwacja r ON r.IdWypozyczenia = w.IdWypozyczenia WHERE IdSamochodu=@id_samochodu AND DataZwrotu>=GETDATE())>=GETDATE()
+	SET @czy_wolny =0
+	ELSE
+	SET @czy_wolny=1
+RETURN @czy_wolny
+END

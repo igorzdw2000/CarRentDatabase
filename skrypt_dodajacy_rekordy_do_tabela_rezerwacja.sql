@@ -1,7 +1,7 @@
 BEGIN TRY
 INSERT INTO tbl_rezerwacja
 VALUES
-(1,1,1,dbo.getCar(1),1000,dbo.uf_getDataWypozyczenia(1),dbo.uf_getDataZwrotu(1),'2022-06-05',(dbo.uf_czyZwrocicKaucje(1)+CONVERT(money,dbo.getCar(1)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(1),dbo.uf_getDataZwrotu(1))))),
+(1,1,1,dbo.uf_getCar(1),1000,dbo.uf_getDataWypozyczenia(1),dbo.uf_getDataZwrotu(1),'2022-06-05',(dbo.uf_czyZwrocicKaucje(1)+CONVERT(money,dbo.getCar(1)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(1),dbo.uf_getDataZwrotu(1))))),
 (2,2,2,dbo.getCar(2),1000,dbo.uf_getDataWypozyczenia(2),dbo.uf_getDataZwrotu(2),'2022-05-11',(dbo.uf_czyZwrocicKaucje(2)+CONVERT(money,dbo.getCar(2)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(2),dbo.uf_getDataZwrotu(2))))),
 (3,3,4,dbo.getCar(4),1000,dbo.uf_getDataWypozyczenia(3),dbo.uf_getDataZwrotu(3),'2022-03-08',(dbo.uf_czyZwrocicKaucje(3)+CONVERT(money,dbo.getCar(4)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(3),dbo.uf_getDataZwrotu(3))))),
 (4,4,5,dbo.getCar(5),1000,dbo.uf_getDataWypozyczenia(4),dbo.uf_getDataZwrotu(4),'2022-02-12',(dbo.uf_czyZwrocicKaucje(4)+CONVERT(money,dbo.getCar(5)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(4),dbo.uf_getDataZwrotu(4))))),
@@ -20,7 +20,8 @@ VALUES
 (17,17,22,dbo.getCar(22),1000,dbo.uf_getDataWypozyczenia(17),dbo.uf_getDataZwrotu(17),'2021-11-09',(dbo.uf_czyZwrocicKaucje(17)+CONVERT(money,dbo.getCar(22)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(17),dbo.uf_getDataZwrotu(17))))),
 (18,18,20,dbo.getCar(20),1000,dbo.uf_getDataWypozyczenia(18),dbo.uf_getDataZwrotu(18),'2022-05-08',(dbo.uf_czyZwrocicKaucje(18)+CONVERT(money,dbo.getCar(20)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(18),dbo.uf_getDataZwrotu(18))))),
 (19,19,18,dbo.getCar(18),1000,dbo.uf_getDataWypozyczenia(19),dbo.uf_getDataZwrotu(19),'2021-10-28',(dbo.uf_czyZwrocicKaucje(19)+CONVERT(money,dbo.getCar(18)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(19),dbo.uf_getDataZwrotu(19))))),
-(20,20,16,dbo.getCar(16),1000,dbo.uf_getDataWypozyczenia(20),dbo.uf_getDataZwrotu(20),'2022-06-05',(dbo.uf_czyZwrocicKaucje(20)+CONVERT(money,dbo.getCar(16)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(20),dbo.uf_getDataZwrotu(20)))))
+(20,20,16,dbo.getCar(16),1000,dbo.uf_getDataWypozyczenia(20),dbo.uf_getDataZwrotu(20),'2022-06-05',(dbo.uf_czyZwrocicKaucje(20)+CONVERT(money,dbo.getCar(16)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(20),dbo.uf_getDataZwrotu(20))))),
+(21,21,16,dbo.uf_getCar(16),1000,dbo.uf_getDataWypozyczenia(21),dbo.uf_getDataZwrotu(21),'2022-06-15',(dbo.uf_czyZwrocicKaucje(21)+CONVERT(money,dbo.uf_getCar(16)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(21),dbo.uf_getDataZwrotu(21)))))
 END TRY
 BEGIN CATCH
 	EXECUTE usp_GetErrorInfo

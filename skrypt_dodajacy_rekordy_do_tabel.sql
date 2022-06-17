@@ -57,8 +57,8 @@ VALUES
 (17,'2021-11-12','2021-12-01','dobry'),
 (18,'2022-05-09','2022-06-09','dobry'),
 (19,'2021-10-29','2021-11-05','dobry'),
-(20,'2022-06-06','2022-06-10','zarysowany przedni lewy b³otnik')
-
+(20,'2022-06-06','2022-06-10','zarysowany przedni lewy b³otnik'),
+(21,'2022-06-15','2022-06-20','dobry')
 
 
 INSERT INTO tbl_ubezpieczenie
