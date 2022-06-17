@@ -53,5 +53,5 @@ DECLARE @msg varchar(50)
 	END
 END TRY
 BEGIN CATCH
-	EXECUTE usp_GetErrorInfo
+	EXECUTE usp_GetErrorInfo 
 END CATCH
