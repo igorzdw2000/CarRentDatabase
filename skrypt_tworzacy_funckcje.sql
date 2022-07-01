@@ -121,4 +121,88 @@ WHERE LOWER(k.Imie) + ' '+LOWER(k.Nazwisko) LIKE LOWER('%'+@imieLubNazwisko+'%')
 GROUP BY rk.IdKlienta,k.Imie,k.Nazwisko)
 GO
 
+CREATE OR ALTER FUNCTION uf_wyswietl_dane_z_kursora_rezerwacje()
+RETURNS @kursor TABLE(wartosc varchar(255))
+AS
+BEGIN
+DECLARE @imie varchar(50);
+DECLARE @nazwisko varchar(50);
+DECLARE @model varchar(50);
+DECLARE @marka varchar(50);
+DECLARE crs_rezerwacje_klienta CURSOR FOR
+SELECT k.Imie, k.Nazwisko, m.Marka,model.Model FROM tbl_klient k
+INNER JOIN tbl_rezerwacja_klient rk ON rk.IdKlienta = k.IdKlienta
+INNER JOIN tbl_rezerwacja r ON r.IdRezerwacji = rk.IdRezerwacji
+INNER JOIN tbl_samochod s ON r.IdSamochodu = s.IdSamochodu
+INNER JOIN dict.tbl_marka m ON m.IdMarki = s.IdMarki
+INNER JOIN dict.tbl_model model ON model.IdModelu = s.IdSamochodu;
+OPEN crs_rezerwacje_klienta;
+FETCH NEXT FROM crs_rezerwacje_klienta INTO @imie,@nazwisko,@marka,@model;
+WHILE @@FETCH_STATUS=0
+BEGIN
+INSERT INTO @kursor(wartosc) VALUES('Klient '+@imie+' '+@nazwisko+' wypo¿yczy³\a '+@marka+' '+@model);
+FETCH NEXT FROM crs_rezerwacje_klienta INTO @imie,@nazwisko,@marka,@model;
+END
+CLOSE crs_rezerwacje_klienta;
+DEALLOCATE crs_rezerwacje_klienta;
+RETURN 
+END
+GO
 
+CREATE OR ALTER FUNCTION uf_wyswietl_dane_z_kursora_faktury()
+RETURNS @kursor TABLE( wartosc varchar(255))
+AS
+BEGIN
+DECLARE @id int;
+DECLARE @tytul varchar(50);
+DECLARE @calkowita_wartosc int;
+DECLARE crs_wartosc_faktury CURSOR FOR
+SELECT f.IdFaktury,f.Tytyl,SUM(pf.Cena) FROM tbl_faktura f INNER JOIN tbl_pozycje_faktury pf ON f.IdFaktury = pf.IdFaktury
+GROUP BY f.IdFaktury,f.Tytyl;
+OPEN crs_wartosc_faktury;
+FETCH NEXT FROM crs_wartosc_faktury into @id,@tytul,@calkowita_wartosc;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @kursor(wartosc) VALUES('Ca³kowita wartoœæ faktury '+@tytul+' wynosi '+CONVERT(varchar(50),@calkowita_wartosc)+' z³')
+FETCH NEXT FROM crs_wartosc_faktury into @id,@tytul,@calkowita_wartosc;
+END
+CLOSE crs_wartosc_faktury;
+DEALLOCATE crs_wartosc_faktury;
+RETURN 
+END
+GO
+CREATE FUNCTION uf_wyszukaj_fakture_po_nr
+(@nr_faktury int)
+RETURNS TABLE
+AS
+RETURN(
+SELECT * FROM tbl_faktura
+WHERE IdFaktury = @nr_faktury)
+GO
+CREATE FUNCTION uf_wyszukaj_wojewodztwo_po_nazwie
+(@wojewodztwo varchar(25))
+RETURNS TABLE
+AS
+RETURN(
+SELECT IdWojewodztwa,Wojewodztwo FROM dict.tbl_wojewodztwo
+WHERE LOWER(Wojewodztwo) LIKE LOWER('%'+@wojewodztwo+'%'))
+
+go
+
+CREATE FUNCTION uf_wyszukaj_ubezpieczenie_po_nr_polisy
+(@nr_polisy varchar(16))
+RETURNS TABLE
+AS
+RETURN(
+SELECT * FROM tbl_ubezpieczenie 
+WHERE LOWER(NumerPolisy) LIKE LOWER('%'+@nr_polisy+'%'))
+GO
+CREATE FUNCTION uf_wyszukaj_platnosci_po_tytule_faktury
+(@tytul varchar(50))
+RETURNS TABLE
+AS
+RETURN(
+SELECT p.IdPlatnosci, p.IdFaktury,f.Tytyl,p.Zaplata,p.IdFormaPlatnosci FROM tbl_platnosc p 
+INNER JOIN tbl_faktura f
+ON p.IdFaktury = f.IdFaktury
+WHERE LOWER(f.Tytyl) LIKE LOWER('%'+@tytul+'%'))
