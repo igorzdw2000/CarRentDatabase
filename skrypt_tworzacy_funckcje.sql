@@ -206,3 +206,48 @@ SELECT p.IdPlatnosci, p.IdFaktury,f.Tytyl,p.Zaplata,p.IdFormaPlatnosci FROM tbl_
 INNER JOIN tbl_faktura f
 ON p.IdFaktury = f.IdFaktury
 WHERE LOWER(f.Tytyl) LIKE LOWER('%'+@tytul+'%'))
+GO
+CREATE FUNCTION uf_wyszukaj_klienta_po_wojewodztwie
+(@wojewodztwo varchar(19))
+RETURNS TABLE
+AS
+RETURN(
+SELECT IdKlienta,Imie,Nazwisko,Adres,Miejscowosc,KodPocztowy,w.Wojewodztwo,IdKraju,Telefon,Email,DataUrodzenia,IdPlci FROM tbl_klient k 
+INNER JOIN dict.tbl_wojewodztwo w  
+ON k.IdWojewodztwa = w.IdWojewodztwa
+WHERE LOWER(w.Wojewodztwo) LIKE LOWER('%'+@wojewodztwo+'%'))
+GO
+CREATE OR ALTER FUNCTION uf_ile_klientek()
+RETURNS TABLE
+AS
+RETURN(
+SELECT COUNT(IdKlienta) AS 'Liczba klientek' FROM tbl_klient WHERE IdPlci = 1 GROUP BY IdPlci);
+GO
+CREATE OR ALTER FUNCTION uf_ile_klientow()
+RETURNS TABLE
+AS
+RETURN(
+SELECT COUNT(IdKlienta) AS 'Liczba klientow' FROM tbl_klient WHERE IdPlci = 2 GROUP BY IdPlci);
+
+GO
+CREATE OR ALTER FUNCTION uf_wyswietl_dane_z_kursora_klienta()
+RETURNS @kursor TABLE(wartosc varchar(255))
+AS
+BEGIN
+DECLARE @imie varchar(30);
+DECLARE @nazwisko varchar(50);
+DECLARE @telefon varchar(15);
+DECLARE @email varchar(40);
+DECLARE crs_kontakt_klienci CURSOR FOR
+SELECT Imie,Nazwisko,Telefon,Email FROM tbl_klient
+OPEN crs_kontakt_klienci;
+FETCH NEXT FROM crs_kontakt_klienci INTO @imie,@nazwisko,@telefon,@email;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @kursor(wartosc) VALUES('Kontakt do klienta: '+@imie+' '+@nazwisko+' | '+@telefon+' | '+@email)
+FETCH NEXT FROM crs_kontakt_klienci INTO @imie,@nazwisko,@telefon,@email;
+END
+CLOSE crs_kontakt_klienci;
+DEALLOCATE crs_kontakt_klienci;
+RETURN
+END
