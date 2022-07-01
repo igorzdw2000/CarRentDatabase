@@ -74,3 +74,51 @@ BEGIN
 	SET @czy_wolny=1
 RETURN @czy_wolny
 END
+CREATE FUNCTION uf_wyszukaj_marke_po_nazwie
+(@marka varchar(30))
+RETURNS TABLE
+AS
+RETURN(
+SELECT * FROM dict.tbl_marka
+WHERE LOWER(Marka) LIKE LOWER('%'+@marka+'%'))
+GO
+
+CREATE FUNCTION uf_wyszukaj_model_po_nazwie
+(@model varchar(50))
+RETURNS TABLE
+AS
+RETURN(
+SELECT * FROM dict.tbl_model
+WHERE LOWER(Model) LIKE LOWER('%'+@model+'%'))
+GO
+
+CREATE FUNCTION uf_wyszukaj_klienta_po_imieniu_nazwisku
+(@imieLubNazwisko varchar(60))
+RETURNS TABLE
+AS
+RETURN(
+SELECT * FROM tbl_klient
+WHERE LOWER(Imie)+' '+LOWER(Nazwisko) LIKE LOWER('%'+@imieLubNazwisko+'%'))
+GO
+
+CREATE OR ALTER FUNCTION uf_wyszukaj_samochod_po_marce
+(@model varchar(50))
+RETURNS TABLE
+AS
+RETURN(
+SELECT s.IdSamochodu,s.Rejestracja,m.Marka,model.Model FROM tbl_samochod s INNER JOIN dict.tbl_marka m ON s.IdMarki = m.IdMarki
+INNER JOIN dict.tbl_model model ON model.IdModelu = s.IdModelu
+WHERE LOWER(m.Marka) LIKE LOWER('%'+@model+'%'))
+GO
+
+CREATE OR ALTER FUNCTION uf_ile_rezerwacji_ma_klient
+(@imieLubNazwisko varchar(50))
+RETURNS TABLE
+AS
+RETURN(
+SELECT k.Imie,k.Nazwisko, COUNT(rk.IdKlienta) AS 'Liczba rezerwacji klienta' FROM tbl_rezerwacja_klient rk INNER JOIN tbl_klient k ON rk.IdKlienta = k.IdKlienta
+WHERE LOWER(k.Imie) + ' '+LOWER(k.Nazwisko) LIKE LOWER('%'+@imieLubNazwisko+'%')
+GROUP BY rk.IdKlienta,k.Imie,k.Nazwisko)
+GO
+
+
