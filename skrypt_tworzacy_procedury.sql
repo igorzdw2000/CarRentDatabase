@@ -1,3 +1,15 @@
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- usp_GetErrorInfo
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Wyœwietla dok³adne informacje na temat przechwyconego b³êdu
+---
+--- Parametry wejœciowe : brak
+---
+--- Parametry wyjœciowe : wypisanie na konsole informacji na temat b³êdu
+---
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE usp_GetErrorInfo  
 AS  
     SELECT   
@@ -9,23 +21,47 @@ AS
         ,ERROR_MESSAGE() AS ErrorMessage;  
 
 GO
-CREATE SEQUENCE new_id_klient
+CREATE SEQUENCE seq_new_id_klient
 INCREMENT BY 11
 START WITH 100
 NO CYCLE
 GO
 
-CREATE PROCEDURE up_DodajKlienta @imie varchar(30),
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_klienta(@imie varchar(30),@nazwisko varchar(50),@adres varchar(60),@kod_pocztowy(6),@id_wojewodztwa int,@id_kraju int,@telefon varchar(15), @email varchar(40), @data_urodzenia date, @id_plec int 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_klient
+--- Dodaje nowego klienta do bazy
+---
+--- Parametry wejœciowe : 
+---	imie klienta, jest to varchar
+---	nazwisko, jest to varchar
+--- adres, jest to varchar
+--- kod pocztowy, jest to varchar
+--- id województwa, jest to int
+--- id kraju, jest to int
+--- telefon, jest to varchar
+--- email, jest to varchar
+--- data urodzenia, jest to date
+--- id p³ci, jest to int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
+CREATE PROCEDURE up_dodaj_klienta @imie varchar(30),
 @nazwisko varchar(50),
 @adres varchar(60),
 @miejscowsc varchar(60),
 @kod_pocztowy varchar(6),
-@wojewodztwo varchar(25),
-@kraj varchar(50),
+@id_wojewodztwa int,
+@id_kraju int,
 @telefon varchar(15),
 @email varchar(40),
 @data_urodzenia date,
-@plec varchar(15)
+@id_plec int
 AS
 BEGIN TRY
 DECLARE @msg varchar(50)
@@ -34,41 +70,62 @@ DECLARE @msg varchar(50)
 	@adres IS NULL OR
 	@miejscowsc IS NULL OR
 	@kod_pocztowy IS NULL OR
-	@wojewodztwo IS NULL OR
-	@kraj IS NULL OR
+	@id_wojewodztwa IS NULL OR
+	@id_kraju IS NULL OR
 	@telefon IS NULL OR
 	@data_urodzenia IS NULL OR
-	@plec IS NULL 
+	@id_plec IS NULL 
 	BEGIN 
 	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœci null'
 	RAISERROR(21,@msg,1)
 	END
 	BEGIN
-	DECLARE @id_wojewodztwa int, @id_plci int, @id_kraju int
-	SET @id_wojewodztwa = (SELECT IdWojewodztwa FROM dict.tbl_wojewodztwo WHERE Wojewodztwo = @wojewodztwo)
-	SET @id_plci = (SELECT IdPlci FROM dict.tbl_plec WHERE Plec = @plec)
-	SET @id_kraju = (SELECT IdKraju FROM dict.tbl_kraj WHERE Kraj = @kraj)
 	INSERT INTO tbl_klient(IdKlienta,Imie,Nazwisko,Adres,Miejscowosc,KodPocztowy,IdWojewodztwa,IdKraju,Telefon,Email,DataUrodzenia,IdPlci)
-	VALUES(NEXT VALUE FOR new_id_klient,@imie,@nazwisko,@adres,@miejscowsc,@kod_pocztowy,@id_wojewodztwa,@id_kraju,@telefon,@email,@data_urodzenia,@id_plci);
+	VALUES(NEXT VALUE FOR seq_new_id_klient,@imie,@nazwisko,@adres,@miejscowsc,@kod_pocztowy,@id_wojewodztwa,@id_kraju,@telefon,@email,@data_urodzenia,@id_plec);
+	PRINT('Dodano nowego klienta')
 	END
 END TRY
 BEGIN CATCH
 	EXECUTE usp_GetErrorInfo 
 END CATCH
 GO
-CREATE SEQUENCE new_id_samochod
+CREATE SEQUENCE seq_new_id_samochod
 INCREMENT BY 11
 START WITH 100
 NO CYCLE
 GO
 
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_auto(@rejestracja varchar(15),@id_model int,@id_marka int,@id_rodzaj_nadwozia int,@id_silnik int,@id_rodzaj_samochodu int,@kolor varchar(15), @email varchar(30), @przebieg int, @rocznik int,@vin varchar(17) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_samochod
+--- Dodaje nowy samochód do bazy
+---
+--- Parametry wejœciowe : 
+---	rejestracja samochodu, jest to varchar
+---	id modelu, jest to varchar
+--- id marki, jest to varchar
+--- id rodzaju nadwozia, jest to varchar
+--- id silnika, jest to int
+--- id rodzaju nadwozia, jest to int
+--- kolor samochodu, jest to varchar
+--- przebieg samochodu, jest to varchar
+--- rocznik, jest to date
+--- vin, jest to varchar
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE PROCEDURE up_dodaj_auto
 @rejestracja varchar(15),
-@model varchar(50),
-@marka varchar(50),
-@rodzaj_nadwozia varchar(25),
-@silnik varchar(50),
-@rodzaj_samochodu varchar(25),
+@id_model int,
+@id_marka int,
+@id_rodzaj_nadwozia int,
+@id_silnik int,
+@id_rodzaj_samochodu int,
 @kolor varchar(30),
 @przebieg int,
 @rocznik int,
@@ -77,11 +134,11 @@ AS
 BEGIN TRY
 	DECLARE @msg varchar(50)
 	IF @rejestracja IS NULL OR
-	@model IS NULL OR
-	@marka IS NULL OR
-	@rodzaj_nadwozia IS NULL OR
-	@silnik IS NULL OR
-	@rodzaj_samochodu IS NULL OR
+	@id_model IS NULL OR
+	@id_marka IS NULL OR
+	@id_rodzaj_nadwozia IS NULL OR
+	@id_silnik IS NULL OR
+	@id_rodzaj_samochodu IS NULL OR
 	@kolor IS NULL OR
 	@przebieg IS NULL OR
 	@rocznik IS NULL OR
@@ -90,15 +147,11 @@ BEGIN TRY
 	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœci NULL'
 	RAISERROR(21,@msg,1)
 	END
+	ELSE
 	BEGIN
-	DECLARE @id_model int, @id_marka int, @id_rodzaj_nadwozia int, @id_rodzaj_samochodu int, @id_silnika int
-	SET @id_model = (SELECT IdModelu FROM dict.tbl_model WHERE Model = @model)
-	SET @id_marka = (SELECT IdMarki FROM dict.tbl_marka WHERE Marka = @marka)
-	SET @id_rodzaj_nadwozia = (SELECT IdRodzajuNadwozia FROM dict.tbl_rodzaj_nadwozia WHERE RodzajNadwozia = @rodzaj_nadwozia)
-	SET @id_rodzaj_samochodu = (SELECT IdRodzajuSamochodu FROM dict.tbl_rodzaj_samochodu WHERE RodzajSamochodu = @rodzaj_samochodu)
-	SET @id_silnika = (SELECT IdSilnika FROM dict.tbl_silnik WHERE TypSilnika=@silnik)
 	INSERT INTO tbl_samochod(IdSamochodu,Rejestracja,IdModelu,IdMarki,IdRodzajuNadwozia,IdSilnika,IdRodzajuSamochodu,Kolor,Przebieg,Rocznik,VIN)
-	VALUES(NEXT VALUE FOR new_id_samochod,@rejestracja,@id_model,@id_marka,@id_rodzaj_nadwozia,@id_silnika,@id_rodzaj_samochodu,@kolor,@przebieg,@rocznik,@vin)
+	VALUES(NEXT VALUE FOR seq_new_id_samochod,@rejestracja,@id_model,@id_marka,@id_rodzaj_nadwozia,@id_silnik,@id_rodzaj_samochodu,@kolor,@przebieg,@rocznik,@vin)
+	PRINT('Pomyœlnie dodano nowy samochód do bazy')
 	END
 END TRY
 BEGIN CATCH
@@ -108,12 +161,23 @@ END CATCH
 GO
 
 	
-CREATE SEQUENCE new_id_rezerwacja
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
-GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_rezerwacje(@id_wypozyczenia int, @id_samochodu int,@data_utworzenia_rezerwacji date) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_rezerwacja
+--- Rejestracja nowej rezerwacji
+---
+--- Parametry wejœciowe : 
+---	@id_wypozyczenia, typ int
+---	@id_samochodu - numer identyfikacyjny samochodu, którego tyczy siê rezerwacja, typ varchar
+--- @data_utworzenia_rezerwacji - data z³o¿enia przez klienta rezerwacji, typ date
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_rezerwacje
 @id_wypozyczenia int,
 @id_samochodu int,
@@ -136,7 +200,7 @@ BEGIN TRY
 	IF (SELECT dbo.uf_czy_wolny_samochod(@id_samochodu)) = 1
 	BEGIN
 	INSERT INTO tbl_rezerwacja(IdRezerwacji,IdWypozyczenia,IdSamochodu,CenaZaDobe,Kaucja,DataRezerwacji,DataKoncaRezerwacji,DataUtworzeniaRezerwacji,LacznaKwotaDoZaplaty)
-	VALUES(NEXT VALUE FOR new_id_rezerwacja,@id_wypozyczenia,@id_samochodu,dbo.uf_getCar(@id_samochodu),1000,dbo.uf_getDataWypozyczenia(@id_wypozyczenia),dbo.uf_getDataZwrotu(@id_wypozyczenia),@data_utworzenia_rezerwacji,(dbo.uf_czyZwrocicKaucje(@id_wypozyczenia)+CONVERT(money,dbo.uf_getCar(@id_samochodu)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(@id_wypozyczenia),dbo.uf_getDataZwrotu(@id_wypozyczenia)))))
+	VALUES(NEXT VALUE FOR seq_new_id_rezerwacja,@id_wypozyczenia,@id_samochodu,dbo.uf_getCar(@id_samochodu),1000,dbo.uf_getDataWypozyczenia(@id_wypozyczenia),dbo.uf_getDataZwrotu(@id_wypozyczenia),@data_utworzenia_rezerwacji,(dbo.uf_czyZwrocicKaucje(@id_wypozyczenia)+CONVERT(money,dbo.uf_getCar(@id_samochodu)*DATEDIFF(day,dbo.uf_getDataWypozyczenia(@id_wypozyczenia),dbo.uf_getDataZwrotu(@id_wypozyczenia)))))
 	END
 	ELSE
 	BEGIN
@@ -157,12 +221,23 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 END CATCH
 GO
 
-CREATE SEQUENCE new_id_wypozyczenie
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
-GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_wypozyczenie(@data_wypozyczenia date, @data_zwrotu date,@stan_techniczny varchar(100)) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_wypozyczenie
+--- Rejestracja nowego wypo¿yczenia
+---
+--- Parametry wejœciowe : 
+---	@data_wypozyczenia - data wypo¿yczenia samochodu, typ date
+---	@data_zwrotu - data zwrotu samochodu, typ date
+--- @stan_techniczny - stan techniczny samochodu po zwrocie, typ date
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_wypozyczenie
 @data_wypozyczenia date,
 @data_zwrotu date,
@@ -180,7 +255,7 @@ BEGIN TRY
 	ELSE
 	BEGIN
 	INSERT INTO tbl_wypozyczenie(IdWypozyczenia, DataWypozyczenia, DataZwrotu, StanTechniczny)
-	VALUES(NEXT VALUE FOR new_id_wypozyczenie,@data_wypozyczenia,@data_zwrotu,@stan_techniczny)
+	VALUES(NEXT VALUE FOR seq_new_id_wypozyczenie,@data_wypozyczenia,@data_zwrotu,@stan_techniczny)
 	END
 END TRY
 BEGIN CATCH
@@ -195,12 +270,31 @@ BEGIN CATCH
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-CREATE SEQUENCE seq_new_id_faktury
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
-GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_fakture(@tytul varchar(50),@wydawca varchar(30),@data_wystawienia date,@nip varchar(11),@nazwa_firmy varchar(50),@nr_konta_bankowego varchar(28),@id_rezerwacji int,@id_wypozyczenia int, @id_formy_faktury
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_faktury
+--- Dodaje now¹ fakturê do bazy danych
+---
+--- Parametry wejœciowe : 
+---	@tytul - tytu³ faktury, typ varchar
+---	@wydawca - podmiot wystawiaj¹cy fakture, typ varchar
+--- @data_wystawienia - data wystawienia faktury, typ date
+--- @nip - NIP firmy/osoby na któr¹ wystawiana jest faktura , typ varchar
+--- @nazwa_firmy - nazwa firmy, typ varchar
+--- @nr_konta_bankowego - numer konta bankowego klienta, typ varchar
+--- @id_rezerwacji - numer identyfikacyjny rezerwacji, typ int
+--- @id_wypozyczenia - numer identyfikacyjny wypo¿yczenia, typ int
+--- @id_formy faktury - numer identyfikacyjny formy faktury, typ int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku wypo¿yczenia o podanym numerze identyfikacyjnym
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku rezerwacji o podanym numerze identyfikacyjnym
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_fakture
 @tytul varchar(50),
 @wydawca varchar(30),
@@ -260,6 +354,30 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 GO
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_fakture(@id_faktury int,@tytul varchar(50),@wydawca varchar(30),@data_wystawienia date,@nip varchar(11),@nazwa_firmy varchar(50),@nr_konta_bankowego varchar(28),@id_rezerwacji int,@id_wypozyczenia int, @id_formy_faktury
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Modyfikuje rekord w tabeli tbl_faktura
+--- Modyfikuje fakture o podanym numerze
+---
+--- Parametry wejœciowe :
+--- @id faktury - numer identyfikacyjny faktury, która ma ulec modyfikacji, typ int
+---	@tytul - tytu³ faktury, typ varchar
+---	@wydawca - podmiot wystawiaj¹cy fakture, typ varchar
+--- @data_wystawienia - data wystawienia faktury, typ date
+--- @nip - NIP firmy/osoby na któr¹ wystawiana jest faktura , typ varchar
+--- @nazwa_firmy - nazwa firmy, typ varchar
+--- @nr_konta_bankowego - numer konta bankowego klienta, typ varchar
+--- @id_rezerwacji - numer identyfikacyjny rezerwacji, typ int
+--- @id_wypozyczenia - numer identyfikacyjny wypo¿yczenia, typ int
+--- @id_formy faktury - numer identyfikacyjny formy faktury, typ int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_fakture
 @id_faktury int,
 @tytul varchar(50),
@@ -306,6 +424,21 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 GO
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_usun_fakture(@id_faktury int)
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Usuwa rekord w tabeli tbl_faktura
+--- Usuwa fakture o podanym numerze
+---
+--- Parametry wejœciowe :
+--- @id faktury - numer identyfikacyjny faktury, która ma byæ usuniêta, typ int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_usun_fakture
 @id_faktury int
 AS
@@ -332,6 +465,31 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 GO
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_klient(@id_klienta int, @imie varchar(30),@nazwisko varchar(50),@adres varchar(60),@kod_pocztowy(6),@id_wojewodztwa int,@id_kraju int,@telefon varchar(15), @email varchar(40), @data_urodzenia date, @id_plec int 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_klient
+--- Dodaje nowego klienta do bazy
+---
+--- Parametry wejœciowe : 
+--- @id_klienta - numer identyfikacyjny klienta
+---	@imie - imie klienta, jest to varchar
+---	@nazwisko - nazwisko klienta, jest to varchar
+--- @adres - adres klienta, jest to varchar
+--- @kod_pocztowy - kod pocztowy klienta, jest to varchar
+--- @id_województwa - numer identyfikacyjny województwa z którego pochodzi klient, jest to int
+--- @id_kraju - numer identyfikacyjny kraju z którego pochodzi klient, jest to int
+--- @telefon - numer telefonu, jest to varchar
+--- @email - adres email, jest to varchar
+--- @data urodzenia - data urodzenia klienta, jest to date
+--- @id_p³ci - p³eæ, jest to int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_klient
 @id_klienta int,
 @imie varchar(50),
@@ -360,7 +518,7 @@ DECLARE @msg varchar(50)
 	@id_plec IS NULL 
 	BEGIN 
 	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœci null'
-	RAISERROR(21,@msg,1)
+	RAISERROR(@msg,16,1)
 	END
 	IF((SELECT COUNT(IdKlienta) FROM tbl_klient WHERE IdKlienta = @id_klienta)=1)
 		BEGIN
@@ -398,6 +556,30 @@ BEGIN CATCH
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_samochod(@id_samochodu int, @rejestracja varchar(15),@id_model int,@id_marka int,@id_rodzaj_nadwozia int,@id_silnik int,@id_rodzaj_samochodu int,@kolor varchar(15), @email varchar(30), @przebieg int, @rocznik int,@vin varchar(17) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_samochod
+--- Dodaje nowy samochód do bazy
+---
+--- Parametry wejœciowe : 
+---	@rejestracja - rejestracja samochodu, jest to varchar
+---	@id_model - numer identyfikacyjny modelu, jest to int
+--- @id_marka - numer identyfikacyjny marki, jest to int
+--- @id_rodzaj_nadwozia - numer identyfikacyjny rodzaju nadwozia, jest to int
+--- @id_silnik - numer identyfikacyjny rodzaju silnika, jest to int
+--- @id_rodzaj_samochodu -  - numer identyfikacyjny rodzaju samochodu, jest to int
+--- @kolor - kolor samochodu, jest to varchar
+--- @przebieg - przebieg samochodu, jest to varchar
+--- @rocznik - rocznik samochodu, jest to varchar
+--- @vin - numer vin samochodu, jest to varchar
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_samochod
 @id_samochodu int,
 @rejestracja varchar(15),
@@ -425,6 +607,7 @@ BEGIN TRY
 	@vin IS NULL 
 	BEGIN
 	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœci NULL'
+	RAISERROR(@msg,16,1)
 	END
 	ELSE
 		IF((SELECT COUNT(IdSamochodu) FROM tbl_samochod WHERE IdSamochodu = @id_samochodu) = 1)
@@ -460,7 +643,21 @@ DECLARE @ErrorMessage NVARCHAR(4000);
         @ErrorState = ERROR_STATE();  
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_cena_za_wypozyczenie(@id_rodzaj_samochodu int, cena money)
+--------------------------------------------------------------------------------
+--- Modyfkikuje rekord w tabeli dict.tbl_rodzaj_samochodu
+--- Zmienia cena danego typu samochodu
+---
+--- Parametry wejœciowe : 
+--- @id_rodzaj_samochodu - numer identyfikacyjny rodzaju samochodu, jest to int
+--- @cena - cena za dobe, typ money
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_cena_za_wypozyczenie
 @id_rodzaj_samochodu int,
 @cena money
@@ -499,12 +696,27 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-CREATE SEQUENCE seq_new_id_przeglad_samochod
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
 GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_przeglad_samochodu(@data_zrobienia_przegladu date, @data_waznosci_przegladu date, @uwagi varchar(60), @miejsce_przegladu varchar(30), @cena money, @id_samochodu int)
+--- CREATED BY: Hubert Warcho³
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_przeglad_samochodu
+--- Dodaje informacje na temat przegl¹du danego samochodu
+---
+--- Parametry wejœciowe : 
+---	@data_zrobienia_przegladu - data wykonania przegl¹du, typ date
+---	@data_waznosci - data wygaœniêcia przegl¹du, typ date
+--- @uwagi - uwagi do przegl¹du, typ varchar
+--- @miejsce_przegladu - miejsce wykonania przegl¹du, typ varchar
+--- @cena - cena za przegl¹d, typ money
+--- @id_samochodu - numer identyfikacyjny samochodu, którego tyczy siê przegl¹d, typ int
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku samochodu o podanym numerze identyfikacyjnym
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_przeglad_samochodu
 @data_zrobienia_przegladu date,
 @data_waznosci_przegladu date,
@@ -551,12 +763,25 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 END CATCH
 
 
-CREATE SEQUENCE seq_new_id_naprawy_samochod
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
-GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_naprawe_samochodu(@opis_naprawy varchar(50),@data_naprawy date, @cena money, @id_samochodu int)
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_spis_naprawa
+--- Dodaje nowy wpis informuj¹cy o naprawie danego samochodu
+---
+--- Parametry wejœciowe : 
+---	@opis_naprawy - krótki opis naprawy, typ varchar
+---	@data_naprawy - data naprawy samochodu, typ date
+--- @cena - cena naprawy, typ money
+--- @id_samochodu - numer identyfikacyjny samochodu, którego tyczy siê naprawa , typ varchar
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku samochodu o podanym numerze identyfikacyjnym
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_naprawe_samochodu
 @opis_naprawy varchar(50),
 @data_naprawy date,
@@ -599,12 +824,27 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-CREATE SEQUENCE seq_new_id_ubezpieczenie
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
 GO
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_ubezpieczenie(@id_samochodu int, @nr_polisy varchar(16),@data_rozp_ubezpieczenia date, @data_zakon_ubezpieczenia date, @firma_ubezpieczeniowa varchar(50),@cena money) 
+--- CREATED BY: Hubert Warcho³
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_ubezpieczenie
+--- Dodanie nowego ubezpieczenia do bazy danych
+---
+--- Parametry wejœciowe : 
+---	@id_samochodu - numer identyfikacyjny samochodu którego tyczy siê ubezpieczenie, typ int
+---	@nr_polisy - nr polisy ubezpieczeniowej, typ int
+--- @data_rozp_ubezpieczenia - data rozpoczêcia czasu trwania ubezpieczenia, typ date
+--- @data_zakon_ubezpieczenia - data zakoñczenia trwania ubezpieczenia, typ date
+--- @firma_ubepieczeniowa - nazwa firmy ubezpieczeniowej ,typ varchar
+--- @cena - cena za ubezpieczenie, typ money
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_ubezpieczenie
 @id_samochodu int,
 @nr_polisy varchar(16),
@@ -651,12 +891,29 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-CREATE SEQUENCE seq_new_id_ubezpieczenie
-INCREMENT BY 11
-START WITH 100
-NO CYCLE
-GO
 
+GO
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_ubezpieczenie(@id_ubezpieczenia int,@id_samochodu int, @nr_polisy varchar(16),@data_rozp_ubezpieczenia date, @data_zakon_ubezpieczenia date, @firma_ubezpieczeniowa varchar(50),@cena money) 
+--- CREATED BY: Hubert Warcho³
+--------------------------------------------------------------------------------
+--- Modyfikuje rekord w tabeli tbl_ubezpieczenie
+--- Zmienia wybrane parametry danego ubezpieczenia
+---
+--- Parametry wejœciowe : 
+--- @id_ubezpieczenia - numer identyfikacyjny ubezpieczenia, które ma byæ poddane modyfikacji
+---	@id_samochodu - numer identyfikacyjny samochodu którego tyczy siê ubezpieczenie, typ int
+---	@nr_polisy - nr polisy ubezpieczeniowej, typ int
+--- @data_rozp_ubezpieczenia - data rozpoczêcia czasu trwania ubezpieczenia, typ date
+--- @data_zakon_ubezpieczenia - data zakoñczenia trwania ubezpieczenia, typ date
+--- @firma_ubepieczeniowa - nazwa firmy ubezpieczeniowej ,typ varchar
+--- @cena - cena za ubezpieczenie, typ money
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_ubezpieczenie
 @id_ubezpieczenia int,
 @id_samochodu int,
@@ -720,8 +977,22 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-
-
+GO
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_usun_ubezpieczenie(@id_ubezpieczenia int) 
+--- CREATED BY: Hubert Warcho³
+--------------------------------------------------------------------------------
+--- Usuwa rekord w tabeli tbl_ubezpieczenie
+--- Usuwa dane ubezpieczenie
+---
+--- Parametry wejœciowe : 
+--- @id_ubezpieczenia - numer identyfikacyjny ubezpieczenia, które ma byæ usuniête
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_usun_ubezpieczenie
 @id_ubezpieczenia int
 AS
@@ -757,50 +1028,31 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-
-
-CREATE OR ALTER PROCEDURE up_usun_ubezpieczenie
-@id_ubezpieczenia int
-AS
-BEGIN TRY
-	DECLARE @msg varchar(100)
-	IF  @id_ubezpieczenia IS NULL
-	BEGIN
-	SET @msg = 'Kolumny nie mog¹ przyjmowaæ wartoœæ NULL'
-		RAISERROR(16,@msg,1)
-	END
-	ELSE
-		BEGIN
-		IF((SELECT COUNT(IdUbezpieczenia) FROM tbl_ubezpieczenie WHERE IdUbezpieczenia=@id_ubezpieczenia)=1)
-			BEGIN
-			DELETE FROM tbl_ubezpieczenie WHERE IdUbezpieczenia = @id_ubezpieczenia
-			PRINT('Pomyœlnie usuniêto rekord z bazy')
-			END
-			ELSE
-				BEGIN
-				PRINT('W bazie nie ma ubezpieczenia o podanym ID!')
-				END
-		END
-END TRY
-BEGIN CATCH
-DECLARE @ErrorMessage NVARCHAR(4000);  
-    DECLARE @ErrorSeverity INT;  
-    DECLARE @ErrorState INT;  
-  
-    SELECT   
-        @ErrorMessage = ERROR_MESSAGE(),  
-        @ErrorSeverity = ERROR_SEVERITY(),  
-        @ErrorState = ERROR_STATE();  
-	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
-END CATCH
-
-
+GO
 CREATE SEQUENCE seq_new_id_platnosci
 INCREMENT BY 11
 START WITH 100
 NO CYCLE
 GO
 
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_platnosc(@zaplata money,@id_faktury int, @id_forma_platnosci int)
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_platnosc
+--- Dodaje now¹ p³atnoœæ do bazy
+---
+--- Parametry wejœciowe : 
+---	@zaplata - kwota do zap³aty, typ money
+---	@id_faktury - numer identyfikacyjny faktury, typ int
+--- @id_forma_platnosci - numer identyfikacyjny formy p³atnoœci, typ int
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku faktury o podanym numerze identyfikacyjnym
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_platnosc
 @zaplata money,
 @id_faktury int,
@@ -848,6 +1100,27 @@ START WITH 100
 NO CYCLE
 GO
 
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_dodaj_pozycje_do_faktury(@id_faktury int, @id_samochodu int, @id_rodzaj_samochodu int, @ilosc int, @cena money, @nr_pozycji_na_fakturze int)
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Dodaje rekord do tabeli tbl_pozycje_faktury
+--- Dodaje now¹ pozycjê do faktury o danym numerze identyfikacyjnym
+---
+--- Parametry wejœciowe : 
+---	@id_faktury - numer identyfikacyjny faktury, typ int
+---	@id_samochodu - numer identyfikacyjny samochodu, typ int
+--- @id_rodzaj_samochodu - numer identyfikacyjny rodzaju samochodu, typ int
+--- @ilosc - iloœæ, typ int
+--- @cena - cena do zap³aty za pozycje, typ money
+--- @nr_pozycji_na_fakturze - numer pozycji na danej fakturze
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku faktury o podanym numerze identyfikacyjnym
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o braku samochodu o podanym numerze identyfikacyjnym
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_dodaj_pozycje_do_faktury
 @id_faktury int,
 @id_samochodu int,
@@ -901,6 +1174,24 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 go
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_rezerwacja(@id_rezerwacji int,@id_wypozyczenia int, @id_samochodu int,@data_utworzenia_rezerwacji date) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Modyfikuje rekord w tabeli tbl_rezerwacja
+--- Modyfikuje parametry danej rezerwacji
+---
+--- Parametry wejœciowe : 
+--- @id_rezerwacji - numer identyfikacyjny rezerwacji, która ma byæ zmodyfikowana, typ int
+---	@id_wypozyczenia, typ int
+---	@id_samochodu - numer identyfikacyjny samochodu, którego tyczy siê rezerwacja, typ varchar
+--- @data_utworzenia_rezerwacji - data z³o¿enia przez klienta rezerwacji, typ date
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_rezerwacja
 @id_rezerwacji int,
 @id_wypozyczenia int,
@@ -960,7 +1251,24 @@ DECLARE @ErrorMessage NVARCHAR(4000);
 	RAISERROR(@ErrorMessage,@ErrorSeverity,@ErrorState)
 END CATCH
 
-
+--------------------------------------------------------------------------------
+--- PROCEDURE DEFINITION
+--- up_mod_wypozyczenie(@id_wypozyczenia int,@data_wypozyczenia date, @data_zwrotu date,@stan_techniczny varchar(100)) 
+--- CREATED BY: Igor Owczarek
+--------------------------------------------------------------------------------
+--- Modyfikuje rekord w tabeli tbl_wypozyczenie
+--- Modyfikuje parametry danego wypo¿yczenia
+---
+--- Parametry wejœciowe : 
+--- @id_wypozyczenia - numer identyfikacyjny wypo¿yczenia, które ma byæ zmodyfikowane, typ int
+---	@data_wypozyczenia - data wypo¿yczenia samochodu, typ date
+---	@data_zwrotu - data zwrotu samochodu, typ date
+--- @stan_techniczny - stan techniczny samochodu po zwrocie, typ date
+---
+--- Parametry wyjœciowe : 
+--- Wiadomoœæ wypisana na konsoli informuj¹ca o poporawnym wykonaniu procedury
+--- Wiadomoœc wypisana na konsoli informuj¹ca o b³êdnym wykonaniu procedury
+--------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE up_mod_wypozyczenie
 @id_wypozyczenia int,
 @data_wypozyczenia date,
